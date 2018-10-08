@@ -13,6 +13,7 @@ fetch(url)
         console.log(error);
     })
 
+// sort by firstname (alphabetically)
 function contactSort(contacts) {
     return contacts.sort(function (a, b) {
         if (a.name.first < b.name.first) return -1;
@@ -20,6 +21,7 @@ function contactSort(contacts) {
     });
 }
 
+// return a list with contacts
 function displayContacts(){
     const sortContacts = contactSort(contacts);
     const html = sortContacts.map(contact => {
@@ -38,6 +40,7 @@ function displayContacts(){
     contactList.innerHTML = html;
 }
 
+// return matching name or phone number
 function findMatches(wordToMatch, contacts){
     return contacts.filter(contact => {
        const regex = new RegExp(wordToMatch, 'gi');
@@ -45,6 +48,7 @@ function findMatches(wordToMatch, contacts){
     });
 }
 
+// return list with matching name or phone number
 function displayMatches() {
     const sortContacts = contactSort(contacts);
     const matchArray = findMatches(this.value, sortContacts);

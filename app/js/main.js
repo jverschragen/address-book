@@ -4,7 +4,7 @@ const contactList = document.querySelector('.contacts');
 const url = 'https://randomuser.me/api/?nat=us,dk,fr,gb&results=10';
 
 const contacts = [];
-
+console.log(contacts)
 fetch(url)
     .then(blob => blob.json())
     .then(data => contacts.push(...data.results))

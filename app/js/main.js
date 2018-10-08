@@ -1,3 +1,6 @@
+const searchInput = document.querySelector('.search');
+const contactList = document.querySelector('.contacts');
+
 const url = 'https://randomuser.me/api/?nat=us,dk,fr,gb&results=10';
 
 const contacts = [];
@@ -5,17 +8,34 @@ const contacts = [];
 fetch(url)
     .then(blob => blob.json())
     .then(data => contacts.push(...data.results))
+    .then(displayContacts)
     .catch(function(error) {
         console.log(error);
-    });
+    })
 
-console.log(contacts);
-
-function sortContacts(){
-    contacts.sort(function (a, b) {
+function contactSort(contacts) {
+    return contacts.sort(function (a, b) {
         if (a.name.first < b.name.first) return -1;
         if (a.name.first > b.name.first) return 1;
     });
+}
+
+function displayContacts(){
+    const sortContacts = contactSort(contacts);
+    const html = sortContacts.map(contact => {
+        const firstName = contact.name.first;
+        const lastName = contact.name.last;
+        const phoneNumber = contact.phone;
+        const img = contact.picture.medium;
+        return`
+          <li>
+            <img src=${img}>
+            <span class="name">${firstName} ${lastName}</span>
+            <span class="phone">${phoneNumber}</span>
+          </li>
+        `;
+    }).join('');
+    contactList.innerHTML = html;
 }
 
 function findMatches(wordToMatch, contacts){
@@ -26,17 +46,18 @@ function findMatches(wordToMatch, contacts){
 }
 
 function displayMatches() {
-    const matchArray = findMatches(this.value, contacts);
+    const sortContacts = contactSort(contacts);
+    const matchArray = findMatches(this.value, sortContacts);
     const html = matchArray.map(contact => {
         const regex = new RegExp(this.value, 'gi');
         const firstName = contact.name.first.replace(regex, `<span class="hl">${this.value}</span>`);
         const lastName = contact.name.last.replace(regex, `<span class="hl">${this.value}</span>`);
-        const phoneNumber = contact.phone;
+        const phoneNumber = contact.phone.replace(regex, `<span class="hl">${this.value}</span>`);
         const img = contact.picture.medium;
         return`
           <li>
             <img src=${img}>
-            <span class="name">${firstName}, ${lastName}</span>
+            <span class="name">${firstName} ${lastName}</span>
             <span class="phone">${phoneNumber}</span>
           </li>
         `;
@@ -65,10 +86,6 @@ function displayMatches() {
 //     append(li, spanPhone);
 //     append(ul, li);
 // });
-
-
-const searchInput = document.querySelector('.search');
-const contactList = document.querySelector('.contacts');
 
 searchInput.addEventListener('change', displayMatches);
 searchInput.addEventListener('keyup', displayMatches);
